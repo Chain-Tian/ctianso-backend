@@ -1,9 +1,10 @@
 package com.cyt.search;
 
 import com.cyt.search.config.WxOpenConfig;
-import javax.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
 
 /**
  * 主类测试
@@ -21,5 +22,6 @@ class MainApplicationTests {
     void contextLoads() {
         System.out.println(wxOpenConfig);
     }
+
 
 }

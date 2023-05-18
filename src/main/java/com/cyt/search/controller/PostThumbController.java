@@ -10,6 +10,8 @@ import com.cyt.search.service.PostThumbService;
 import com.cyt.search.service.UserService;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/post_thumb")
 @Slf4j
+@Api(tags = "帖子点赞模块")
 public class PostThumbController {
 
     @Resource

@@ -1,12 +1,6 @@
 package com.cyt.search.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cyt.search.model.dto.user.UserLoginRequest;
-import com.cyt.search.model.dto.user.UserQueryRequest;
-import com.cyt.search.model.dto.user.UserRegisterRequest;
-import com.cyt.search.model.dto.user.UserUpdateMyRequest;
-import com.cyt.search.model.vo.LoginUserVO;
-import com.cyt.search.model.vo.UserVO;
 import com.cyt.search.annotation.AuthCheck;
 import com.cyt.search.common.BaseResponse;
 import com.cyt.search.common.DeleteRequest;
@@ -16,29 +10,24 @@ import com.cyt.search.config.WxOpenConfig;
 import com.cyt.search.constant.UserConstant;
 import com.cyt.search.exception.BusinessException;
 import com.cyt.search.exception.ThrowUtils;
-import com.cyt.search.model.dto.user.UserAddRequest;
-import com.cyt.search.model.dto.user.UserUpdateRequest;
+import com.cyt.search.model.dto.user.*;
 import com.cyt.search.model.entity.User;
+import com.cyt.search.model.vo.LoginUserVO;
+import com.cyt.search.model.vo.UserVO;
 import com.cyt.search.service.UserService;
-
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 用户接口
@@ -107,8 +96,7 @@ public class UserController {
      * 用户登录（微信开放平台）
      */
     @GetMapping("/login/wx_open")
-    public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
-                                                       @RequestParam("code") String code) {
+    public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response, @RequestParam("code") String code) {
         WxOAuth2AccessToken accessToken;
         try {
             WxMpService wxService = wxOpenConfig.getWxMpService();
@@ -203,8 +191,7 @@ public class UserController {
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-                                            HttpServletRequest request) {
+    public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -256,12 +243,10 @@ public class UserController {
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
-                                                   HttpServletRequest request) {
+    public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
-        Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+        Page<User> userPage = userService.page(new Page<>(current, size), userService.getQueryWrapper(userQueryRequest));
         return ResultUtils.success(userPage);
     }
 
@@ -273,20 +258,21 @@ public class UserController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
-                                                       HttpServletRequest request) {
+    public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
-        Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
-        List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
-        userVOPage.setRecords(userVO);
+
+//        Page<User> userPage = userService.page(new Page<>(current, size),
+//                userService.getQueryWrapper(userQueryRequest));
+//        Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
+//        List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
+//        userVOPage.setRecords(userVO);
+
+        Page<UserVO> userVOPage = userService.listUserVoByPage(userQueryRequest);
         return ResultUtils.success(userVOPage);
     }
 
@@ -300,8 +286,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/update/my")
-    public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
-                                              HttpServletRequest request) {
+    public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest, HttpServletRequest request) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

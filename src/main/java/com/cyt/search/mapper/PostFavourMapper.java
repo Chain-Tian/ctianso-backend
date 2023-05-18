@@ -28,6 +28,8 @@ public interface PostFavourMapper extends BaseMapper<PostFavour> {
     Page<Post> listFavourPostByPage(IPage<Post> page, @Param(Constants.WRAPPER) Wrapper<Post> queryWrapper,
             long favourUserId);
 
+
+
 }
 
 

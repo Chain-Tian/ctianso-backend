@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/post_favour")
 @Slf4j
-@Api(tags = "收藏模块")
+@Api(tags = "帖子收藏模块")
 public class PostFavourController {
 
     @Resource

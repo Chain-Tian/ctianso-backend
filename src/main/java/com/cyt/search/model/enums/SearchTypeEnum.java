@@ -1,5 +1,6 @@
 package com.cyt.search.model.enums;
 
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
@@ -7,22 +8,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 用户角色枚举
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * 数据源枚举
  */
-public enum UserRoleEnum {
+public enum SearchTypeEnum {
 
-    USER("用户", "user"),
-    ADMIN("管理员", "admin"),
-    BAN("被封号", "ban");
-
+    POST("帖子", "post"), USER("用户", "user"), PICTURE("图片", "picture");
     private final String text;
 
     private final String value;
 
-    UserRoleEnum(String text, String value) {
+    SearchTypeEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -42,12 +37,12 @@ public enum UserRoleEnum {
      * @param value
      * @return
      */
-    public static UserRoleEnum getEnumByValue(String value) {
+    public static SearchTypeEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (UserRoleEnum anEnum : UserRoleEnum.values()) {
-            if (anEnum.value.equals(value)) {
+        for (SearchTypeEnum anEnum : SearchTypeEnum.values()) {
+            if (anEnum.getValue().equals(value)) {
                 return anEnum;
             }
         }
@@ -61,4 +56,6 @@ public enum UserRoleEnum {
     public String getText() {
         return text;
     }
+
 }
+

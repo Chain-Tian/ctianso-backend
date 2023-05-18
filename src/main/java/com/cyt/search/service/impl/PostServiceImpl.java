@@ -3,33 +3,25 @@ package com.cyt.search.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cyt.search.exception.BusinessException;
-import com.cyt.search.exception.ThrowUtils;
-import com.cyt.search.model.dto.post.PostEsDTO;
-import com.cyt.search.model.dto.post.PostQueryRequest;
-import com.cyt.search.model.vo.PostVO;
-import com.cyt.search.model.vo.UserVO;
-import com.google.gson.Gson;
 import com.cyt.search.common.ErrorCode;
 import com.cyt.search.constant.CommonConstant;
+import com.cyt.search.exception.BusinessException;
+import com.cyt.search.exception.ThrowUtils;
 import com.cyt.search.mapper.PostFavourMapper;
 import com.cyt.search.mapper.PostMapper;
 import com.cyt.search.mapper.PostThumbMapper;
+import com.cyt.search.model.dto.post.PostEsDTO;
+import com.cyt.search.model.dto.post.PostQueryRequest;
 import com.cyt.search.model.entity.Post;
 import com.cyt.search.model.entity.PostFavour;
 import com.cyt.search.model.entity.PostThumb;
 import com.cyt.search.model.entity.User;
+import com.cyt.search.model.vo.PostVO;
+import com.cyt.search.model.vo.UserVO;
 import com.cyt.search.service.PostService;
 import com.cyt.search.service.UserService;
 import com.cyt.search.utils.SqlUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -46,6 +38,11 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 帖子服务实现
@@ -128,8 +125,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         queryWrapper.eq("isDelete", false);
-        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-                sortField);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
     }
 
@@ -201,8 +197,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 分页
         PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
         // 构造查询
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
-                .withPageable(pageRequest).withSorts(sortBuilder).build();
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).withPageable(pageRequest).withSorts(sortBuilder).build();
         SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
@@ -210,8 +205,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 查出结果后，从 db 获取最新动态数据（比如点赞数）
         if (searchHits.hasSearchHits()) {
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
-            List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
-                    .collect(Collectors.toList());
+            List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId()).collect(Collectors.toList());
             List<Post> postList = baseMapper.selectBatchIds(postIdList);
             if (postList != null) {
                 Map<Long, List<Post>> idPostMap = postList.stream().collect(Collectors.groupingBy(Post::getId));
@@ -270,8 +264,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = postList.stream().map(Post::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
-                .collect(Collectors.groupingBy(User::getId));
+        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream().collect(Collectors.groupingBy(User::getId));
         // 2. 已登录，获取用户点赞、收藏状态
         Map<Long, Boolean> postIdHasThumbMap = new HashMap<>();
         Map<Long, Boolean> postIdHasFavourMap = new HashMap<>();
@@ -308,6 +301,15 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         postVOPage.setRecords(postVOList);
         return postVOPage;
     }
+
+    @Override
+    public Page<PostVO> listPostVoByPage(PostQueryRequest postQueryRequest, HttpServletRequest request) {
+        long current = postQueryRequest.getCurrent();
+        long size = postQueryRequest.getPageSize();
+        Page<Post> postPage = this.page(new Page<>(current, size), this.getQueryWrapper(postQueryRequest));
+        return this.getPostVOPage(postPage, request);
+    }
+
 
 }
 

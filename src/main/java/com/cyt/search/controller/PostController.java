@@ -2,37 +2,32 @@ package com.cyt.search.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cyt.search.annotation.AuthCheck;
-import com.cyt.search.exception.ThrowUtils;
-import com.cyt.search.model.dto.post.PostAddRequest;
-import com.cyt.search.model.dto.post.PostEditRequest;
-import com.cyt.search.model.dto.post.PostQueryRequest;
-import com.cyt.search.model.dto.post.PostUpdateRequest;
-import com.cyt.search.model.vo.PostVO;
-import com.google.gson.Gson;
 import com.cyt.search.common.BaseResponse;
 import com.cyt.search.common.DeleteRequest;
 import com.cyt.search.common.ErrorCode;
 import com.cyt.search.common.ResultUtils;
 import com.cyt.search.constant.UserConstant;
 import com.cyt.search.exception.BusinessException;
+import com.cyt.search.exception.ThrowUtils;
+import com.cyt.search.model.dto.post.PostAddRequest;
+import com.cyt.search.model.dto.post.PostEditRequest;
+import com.cyt.search.model.dto.post.PostQueryRequest;
+import com.cyt.search.model.dto.post.PostUpdateRequest;
 import com.cyt.search.model.entity.Post;
 import com.cyt.search.model.entity.User;
+import com.cyt.search.model.vo.PostVO;
 import com.cyt.search.service.PostService;
 import com.cyt.search.service.UserService;
-
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 帖子接口
@@ -43,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/post")
 @Slf4j
-@Api(tags = "帖子模块")
+@Api(tags = "帖子发布模块")
 public class PostController {
 
     @Resource
@@ -171,8 +166,8 @@ public class PostController {
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Post> postPage = postService.page(new Page<>(current, size), postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+        Page<PostVO> postVOPage = postService.listPostVoByPage(postQueryRequest, request);
+        return ResultUtils.success(postVOPage);
     }
 
     /**

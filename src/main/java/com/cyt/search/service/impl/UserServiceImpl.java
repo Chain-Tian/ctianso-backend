@@ -2,31 +2,31 @@ package com.cyt.search.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cyt.search.common.ErrorCode;
 import com.cyt.search.constant.CommonConstant;
 import com.cyt.search.constant.UserConstant;
 import com.cyt.search.exception.BusinessException;
+import com.cyt.search.mapper.UserMapper;
 import com.cyt.search.model.dto.user.UserQueryRequest;
+import com.cyt.search.model.entity.User;
+import com.cyt.search.model.enums.UserRoleEnum;
 import com.cyt.search.model.vo.LoginUserVO;
 import com.cyt.search.model.vo.UserVO;
 import com.cyt.search.service.UserService;
-import com.cyt.search.common.ErrorCode;
-import com.cyt.search.mapper.UserMapper;
-import com.cyt.search.model.entity.User;
-import com.cyt.search.model.enums.UserRoleEnum;
 import com.cyt.search.utils.SqlUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户服务实现
@@ -269,5 +269,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public Page<UserVO> listUserVoByPage(UserQueryRequest userQueryRequest) {
+        long current = userQueryRequest.getCurrent();
+        long size = userQueryRequest.getPageSize();
+        Page<User> userPage = this.page(new Page<>(current, size),
+                this.getQueryWrapper(userQueryRequest));
+        Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
+        List<UserVO> userVO = this.getUserVO(userPage.getRecords());
+        userVOPage.setRecords(userVO);
+        return userVOPage;
     }
 }

@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cyt.search.model.dto.post.PostQueryRequest;
-import com.cyt.search.model.vo.PostVO;
 import com.cyt.search.model.entity.Post;
+import com.cyt.search.model.vo.PostVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,4 +58,6 @@ public interface PostService extends IService<Post> {
      * @return
      */
     Page<PostVO> getPostVOPage(Page<Post> postPage, HttpServletRequest request);
+
+    Page<PostVO> listPostVoByPage(PostQueryRequest postQueryRequest, HttpServletRequest request);
 }

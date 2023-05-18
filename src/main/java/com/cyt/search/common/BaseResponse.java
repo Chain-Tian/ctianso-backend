@@ -1,7 +1,9 @@
 package com.cyt.search.common;
 
-import java.io.Serializable;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 通用返回类
@@ -11,6 +13,7 @@ import lombok.Data;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Data
+@NoArgsConstructor
 public class BaseResponse<T> implements Serializable {
 
     private int code;
