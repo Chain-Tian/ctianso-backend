@@ -221,8 +221,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             for (Long pId : postIdList) {
                 Post post = idPostMap.get(pId);
                 Map<String, List<String>> highLights = idHighLightMap.get(String.valueOf(pId));
-                post.setTitle(highLights.get("title").get(0));
-                post.setContent(highLights.get("content").get(0));
+                if (highLights.containsKey("title")) {
+                    post.setTitle(highLights.get("title").get(0));
+                }
+                if (highLights.containsKey("content")) {
+                    post.setContent(highLights.get("content").get(0));
+                }
                 resourceList.add(post);
             }
         }

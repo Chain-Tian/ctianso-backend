@@ -11,7 +11,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.HttpCookie;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class VideoDataSource implements Datasource<VideoVO> {
@@ -32,17 +35,24 @@ public class VideoDataSource implements Datasource<VideoVO> {
         JSONObject jsonObject = JSONUtil.parseObj(body);
         JSONObject data = jsonObject.get("data", JSONObject.class);
         JSONArray result = data.get("result", JSONArray.class);
-
+        Page<VideoVO> page = new Page<>();
+        List<VideoVO> list = new ArrayList<>();
         for (Object video : result) {
             JSONObject ob = JSONUtil.parseObj(video);
             String author = ob.getStr("author");
             String url = ob.getStr("arcurl");
             String title = ob.getStr("title");
-            String pic = ob.getStr("pic");
+            Pattern pattern = Pattern.compile("<em class=\"keyword\">(.*?)</em>");
+            Matcher matcher = pattern.matcher(title);
+            while (matcher.find()) {
+                String keyword = matcher.group(1);
+                title = title.replaceFirst("<em class=\"keyword\">" + keyword + "</em>", "<font color=\"red\">" + keyword + "</font>");
+            }
+            String pic = "http:" + ob.getStr("pic");
             VideoVO videoVO = new VideoVO(author, url, title, pic);
-            System.out.println();
+            list.add(videoVO);
         }
-
-        return null;
+        page.setRecords(list);
+        return page;
     }
 }
