@@ -5,11 +5,9 @@ import com.cyt.search.common.ResultUtils;
 import com.cyt.search.manager.SearchFacade;
 import com.cyt.search.model.dto.search.SearchRequest;
 import com.cyt.search.model.vo.SearchVO;
-import com.cyt.search.service.PictureService;
-import com.cyt.search.service.PostService;
-import com.cyt.search.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +32,7 @@ public class SearchController {
     private SearchFacade searchFacade;
 
     @PostMapping("/all")
-//    @Cacheable(value = "search.All", key = "#root.methodName+#searchRequest.type+'_'+#searchRequest.searchText+'_'+#searchRequest.current+'_'+#searchRequest.pageSize", cacheManager = "cacheManager5min")
+    @Cacheable(value = "search", key = "#searchRequest.type+'_'+#searchRequest.searchText+'_'+#searchRequest.current+'_'+#searchRequest.pageSize", cacheManager = "cacheManager5min")
     public BaseResponse<SearchVO> searchAll(@RequestBody SearchRequest searchRequest, HttpServletRequest req) {
         SearchVO searchVO = searchFacade.searchAll(searchRequest, req);
         return ResultUtils.success(searchVO);
