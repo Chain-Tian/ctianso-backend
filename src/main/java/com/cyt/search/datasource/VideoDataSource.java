@@ -7,11 +7,9 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cyt.search.model.vo.VideoVO;
-import com.cyt.search.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.net.HttpCookie;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class VideoDataSource implements Datasource<VideoVO> {
     List<HttpCookie> cookies;
 
 
-    @Scheduled(fixedRate = 60 * 1000)
+    @Scheduled(fixedRate = 60 * 1000 * 5)
     public void getCookie() {
         HttpResponse response = HttpRequest.get("https://www.bilibili.com/").execute();
         cookies = response.getCookies();
