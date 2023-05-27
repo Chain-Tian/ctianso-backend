@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Component
-public class UserDatasource implements Datasource<UserVO> {
+public class UserDataSource implements Datasource<UserVO> {
 
 
     @Resource

@@ -13,7 +13,6 @@ import com.cyt.search.model.vo.SearchVO;
 import com.cyt.search.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -28,7 +27,7 @@ public class SearchFacade {
     private PictureDataSource pictureDataSource;
 
     @Resource
-    private UserDatasource userDatasource;
+    private UserDataSource userDatasource;
 
     @Resource
     private PostDataSource postDataSource;

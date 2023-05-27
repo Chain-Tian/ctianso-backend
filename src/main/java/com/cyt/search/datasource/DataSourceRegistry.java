@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class DataSourceRegistry {
     @Resource
-    Datasource<T> userDatasource;
+    Datasource<T> userDataSource;
 
     @Resource
     Datasource<T> postDataSource;
@@ -21,8 +21,8 @@ public class DataSourceRegistry {
     @Resource
     Datasource<T> pictureDataSource;
 
-//    @Resource
-//    Datasource<T> videoDataSource;
+    @Resource
+    Datasource<T> videoDataSource;
 
     private Map<String, Datasource<T>> typeDataSourceMap;
 
@@ -34,9 +34,9 @@ public class DataSourceRegistry {
 
             {
                 put(SearchTypeEnum.POST.getValue(), postDataSource);
-                put(SearchTypeEnum.USER.getValue(), userDatasource);
+                put(SearchTypeEnum.USER.getValue(), userDataSource);
                 put(SearchTypeEnum.PICTURE.getValue(), pictureDataSource);
-//                put(SearchTypeEnum.VIDEO.getValue(), videoDataSource);
+                put(SearchTypeEnum.VIDEO.getValue(), videoDataSource);
             }
         };
     }
