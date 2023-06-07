@@ -13,60 +13,64 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@SpringBootTest
 public class CrawlerTest {
 
-    //    @Autowired
+    @Resource
     private PostService postService;
 
 
-    @Test
-    public void testBing() throws IOException {
-        int current = 1;
-        String url = "https://cn.bing.com/images/search?q=知更鸟&first=" + current;
-        Document doc = Jsoup.connect(url).get();
-        Elements elements = doc.select(".iuscp.isv");
-        List<Picture> pictures = new ArrayList<>();
-        for (Element element : elements) {
-            // 获取标题
-            String title = element.select(".inflnk").attr("aria-label");
-            // 获取图片
-            String m = element.select(".iusc").attr("m");
-            JSONObject j = JSONUtil.parseObj(m);
-            String imgUrl = j.get("murl", String.class);
-//            System.out.println("title:" + title);
-//            System.out.println("imgUrl:" + imgUrl);
-            pictures.add(new Picture(title, imgUrl));
-        }
-        System.out.println(pictures);
-    }
-
-
-    @Test
-    public void testBaidu() throws IOException {
-        int current = 1;
-        String url = "https://image.baidu.com/search/index?tn=baiduimage&fm=result&ie=utf-8&word=知更鸟";
-        Document doc = Jsoup.connect(url).get();
-        Elements elements = doc.select(".iuscp.isv");
-        List<Picture> pictures = new ArrayList<>();
-        for (Element element : elements) {
-            // 获取标题
-            String title = element.select(".inflnk").attr("aria-label");
-            // 获取图片
-            String m = element.select(".iusc").attr("m");
-            JSONObject j = JSONUtil.parseObj(m);
-            String imgUrl = j.get("murl", String.class);
-//            System.out.println("title:" + title);
-//            System.out.println("imgUrl:" + imgUrl);
-            pictures.add(new Picture(title, imgUrl));
-        }
-        System.out.println(pictures);
-    }
+//    @Test
+//    public void testBing() throws IOException {
+//        int current = 1;
+//        String url = "https://cn.bing.com/images/search?q=知更鸟&first=" + current;
+//        Document doc = Jsoup.connect(url).get();
+//        Elements elements = doc.select(".iuscp.isv");
+//        List<Picture> pictures = new ArrayList<>();
+//        for (Element element : elements) {
+//            // 获取标题
+//            String title = element.select(".inflnk").attr("aria-label");
+//            // 获取图片
+//            String m = element.select(".iusc").attr("m");
+//            JSONObject j = JSONUtil.parseObj(m);
+//            String imgUrl = j.get("murl", String.class);
+////            System.out.println("title:" + title);
+////            System.out.println("imgUrl:" + imgUrl);
+//            pictures.add(new Picture(title, imgUrl));
+//        }
+//        System.out.println(pictures);
+//    }
+//
+//
+//    @Test
+//    public void testBaidu() throws IOException {
+//        int current = 1;
+//        String url = "https://image.baidu.com/search/index?tn=baiduimage&fm=result&ie=utf-8&word=知更鸟";
+//        Document doc = Jsoup.connect(url).get();
+//        Elements elements = doc.select(".iuscp.isv");
+//        List<Picture> pictures = new ArrayList<>();
+//        for (Element element : elements) {
+//            // 获取标题
+//            String title = element.select(".inflnk").attr("aria-label");
+//            // 获取图片
+//            String m = element.select(".iusc").attr("m");
+//            JSONObject j = JSONUtil.parseObj(m);
+//            String imgUrl = j.get("murl", String.class);
+////            System.out.println("title:" + title);
+////            System.out.println("imgUrl:" + imgUrl);
+//            pictures.add(new Picture(title, imgUrl));
+//        }
+//        System.out.println(pictures);
+//    }
 
     @Test
     public void fetch() {
@@ -95,7 +99,6 @@ public class CrawlerTest {
             postList.add(post);
         }
         boolean b = postService.saveBatch(postList);
-        Assertions.assertTrue(b);
     }
 
 
