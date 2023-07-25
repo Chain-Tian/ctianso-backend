@@ -4,20 +4,12 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.cyt.search.model.entity.Picture;
 import com.cyt.search.model.entity.Post;
 import com.cyt.search.service.PostService;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +68,10 @@ public class CrawlerTest {
     public void fetch() {
         String json = "{\"sortField\":\"createTime\",\"sortOrder\":\"descend\",\"reviewStatus\":1,\"current\":1}";
         String url = "https://www.code-nav.cn/api/post/list/page/vo";
-        String res = HttpRequest.post(url).body(json).execute().body();
+        String res = HttpRequest.post(url)
+                .body(json)
+                .execute()
+                .body();
         System.out.println(res);
 
         // 2. json 转对象
