@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
+@Deprecated
 @RequestMapping("/picture")
 @Slf4j
 @Api(tags = "图片模块")
