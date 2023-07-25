@@ -60,7 +60,6 @@ public class SearchFacade {
                 // 查用户
                 return userDatasource.doSearch(searchText, current, pageSize);
             });
-
             try {
                 CompletableFuture.allOf(postTask, pictureTask, userTask).join();
                 // 组装返回体
@@ -76,7 +75,6 @@ public class SearchFacade {
         } else {
             // 返回体
             SearchVO searchVO = new SearchVO();
-            // TODO: 这里要改
             Datasource datasource = dataSourceRegistry.getDatasourceByType(type);
             Page page = datasource.doSearch(searchText, current, pageSize);
             searchVO.setDataList(page.getRecords());
