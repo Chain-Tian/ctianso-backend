@@ -25,6 +25,7 @@ import java.util.List;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Service
+@Deprecated
 @Slf4j
 public class PictureServiceImpl implements PictureService {
     @Override

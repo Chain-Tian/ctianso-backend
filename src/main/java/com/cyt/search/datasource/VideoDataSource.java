@@ -31,6 +31,11 @@ public class VideoDataSource implements Datasource<VideoVO> {
 
     @Override
     public Page<VideoVO> doSearch(String searchText, long pageNum, long pageSize) {
+        if (searchText == null || searchText.equals("")) {
+            Page<VideoVO> videoVOPage = new Page<>(pageNum, pageSize);
+            videoVOPage.setRecords(null);
+            return videoVOPage;
+        }
         String body = HttpRequest.get("https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=" + searchText).cookie(cookies).execute().body();
         JSONObject jsonObject = JSONUtil.parseObj(body);
         JSONObject data = jsonObject.get("data", JSONObject.class);

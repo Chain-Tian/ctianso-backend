@@ -220,6 +220,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public LoginUserVO getLoginUserVO(User user) {
+        
         if (user == null) {
             return null;
         }

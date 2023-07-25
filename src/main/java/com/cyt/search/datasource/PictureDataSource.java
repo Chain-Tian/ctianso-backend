@@ -28,9 +28,14 @@ public class PictureDataSource implements Datasource<Picture> {
     @Override
     public Page<Picture> doSearch(String searchText, long pageNum, long pageSize) {
         long current = (pageNum - 1) * pageSize;
+        if (searchText == null) {
+            Page<Picture> picturePage = new Page<>(pageNum, pageSize);
+            picturePage.setRecords(null);
+            return picturePage;
+        }
+        List<Picture> pictures;
         String url = String.format("https://cn.bing.com/images/search?q=%s&first=%s", searchText, current);
         Document doc = null;
-        List<Picture> pictures;
         try {
             doc = Jsoup.connect(url).get();
             Elements elements = doc.select(".iuscp.isv");
