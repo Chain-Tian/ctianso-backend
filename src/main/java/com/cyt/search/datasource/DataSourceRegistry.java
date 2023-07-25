@@ -24,6 +24,9 @@ public class DataSourceRegistry {
     @Resource
     Datasource<T> videoDataSource;
 
+    @Resource
+    Datasource<T> apiDataSource;
+
     private Map<String, Datasource<T>> typeDataSourceMap;
 
 
@@ -31,12 +34,12 @@ public class DataSourceRegistry {
     public void doInit() {
         typeDataSourceMap = new HashMap<String, Datasource<T>>() {
             private static final long serialVersionUID = 1L;
-
             {
                 put(SearchTypeEnum.POST.getValue(), postDataSource);
                 put(SearchTypeEnum.USER.getValue(), userDataSource);
                 put(SearchTypeEnum.PICTURE.getValue(), pictureDataSource);
                 put(SearchTypeEnum.VIDEO.getValue(), videoDataSource);
+                put(SearchTypeEnum.API.getValue(), apiDataSource);
             }
         };
     }
@@ -45,7 +48,6 @@ public class DataSourceRegistry {
         if (typeDataSourceMap == null) {
             return null;
         }
-
         return typeDataSourceMap.get(type);
     }
 }
