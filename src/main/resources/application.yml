@@ -19,23 +19,23 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://116.205.161.116:3306/cyt_so
-    username: root
-    password: shaco521314
+    url: x
+    username: x
+    password: x
     #   Redis 配置
     #   todo 需替换配置，然后取消注释
   redis:
-    database: 2
-    host: 116.205.161.116
-    port: 6379
+    database: x
+    host: x
+    port: x
     timeout: 5000
-    password: shaco521314
+    password: x
     #   Elasticsearch 配置
     #   todo 需替换配置，然后取消注释
   elasticsearch:
-    uris: http://116.205.161.116:9200
-    username: elastic
-    password: shaco521314
+    uris: x
+    username: x
+    password: x
   # 文件上传
   servlet:
     multipart:
